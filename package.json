@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node ./dist/app.js",
-    "lint": "eslint . --ext .yaml --ext .js --fix",
+    "lint": "eslint ./src --ext ts --ext .js --fix",
     "build": "tsoa spec && tsoa routes && tsc -p .",
     "routes": "tsoa routes",
     "swagger": "tsoa spec"

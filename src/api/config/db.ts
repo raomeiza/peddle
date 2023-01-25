@@ -23,4 +23,4 @@ const InitiateDB = async () => {
   }
 };
 
-export default InitiateMongoServer;
+export default InitiateDB;

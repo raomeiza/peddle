@@ -23,6 +23,6 @@ const uploadToCloud = async (path:string) => {
 const uploadLocal = multer({ dest: 'uploads/' });
 
 module.exports = {
-  upload,
-  uploadFile,
+  uploadLocal,
+  uploadToCloud,
 };

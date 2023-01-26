@@ -1,10 +1,10 @@
 import isEmail from 'validator/lib/isEmail';
 import isMongoId from 'validator/lib/isMongoId';
 // create a regex for password validation - at least one lowercase, one uppercase, one number, minimum 8 characters
-export const passwordRegexWithoutSpecialChar = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+export const passwordRegexWithoutSpecialChar = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$/;
 export const passwordRegexWithoutSpecialCharError =new Error ('Password must contain at least one lowercase, one uppercase, one number, minimum 8 characters');
 export const strongPasswordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
-export const stringPassswordError = new Error('Password must contain At least one upper case, one lower case leter, one digit, one special character and a Minimum of 8 length');
+export const stringPassswordError = 'Password must contain At least one upper case, one lower case leter, one digit, one special character and a Minimum of 8 length';
 
 export const getPasswordStrenthtLevel = (password: string, lenght: number = 8): number => {
   if (password.length < lenght) { return 0 }
@@ -19,14 +19,14 @@ export const getPasswordStrenthtLevel = (password: string, lenght: number = 8): 
 
 export const isEmailValid = (email: string): true | Error => {
   if (!isEmail(email)) {
-    throw 'Email is not valid';
+    throw { message: 'Email is not valid', status: 400 }
   }
   return true;
 }
 
 export const isMongoIdValid = (id: string): true | Error => {
   if (!isMongoId(id)) {
-    throw 'Id is not valid';
+    throw { message: 'Id is not valid', status: 400 }
   }
   return true;
 }

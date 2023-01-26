@@ -1,10 +1,7 @@
 import jwt, { Secret } from 'jsonwebtoken';
-import { JWT_SECRET_KEY } from '../config';
+import { JWT_SECRET_KEY } from '../../config';
 
-// create a class that will be used to sign, verify, and decode tokens
-export class Token {
-  // create a method that will sign a token using the constructor secret key
-  public signToken(payload: any, ): string {
+  export const signToken = async (payload: any): Promise<string> => {
     // if the secret key is not defined throw an error
     if (!JWT_SECRET_KEY) {
       throw new Error('JWT_SECRET_KEY is not defined');
@@ -22,7 +19,7 @@ export class Token {
   }
 
   // create a method that will verify a token using the constructor secret key
-  public verifyToken(token: string): any {
+  export const verifyToken = async (token: string): Promise<any> => {
     // if the secret key is not defined throw an error
     if (!JWT_SECRET_KEY) {
       throw new Error('JWT_SECRET_KEY is not defined');
@@ -40,7 +37,7 @@ export class Token {
   }
 
   // create a method that will refresh a token using the constructor secret key
-  public refreshToken(token: string): string {
+  export const refreshToken = async (token: string): Promise<string> => {
     // if the secret key is not defined throw an error
     if (!JWT_SECRET_KEY) {
       throw new Error('JWT_SECRET_KEY is not defined');
@@ -58,6 +55,3 @@ export class Token {
       throw err;
     }
   }
-}
-// export the Token class
-export default new Token();

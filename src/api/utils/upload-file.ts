@@ -2,7 +2,8 @@ import multer from 'multer';
 const cloudinary = require('cloudinary').v2;
 import fs from 'fs';
 import util from 'util';
-import { CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_NAME } from '../config';
+//@ts-ignore
+import { CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_NAME } from '../../config';
 
 const unLinkFile = util.promisify(fs.unlink);
 

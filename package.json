@@ -1,5 +1,5 @@
 {
-  "name": "express_typescript_skeleton",
+  "name": "peddle",
   "version": "1.0.0",
   "description": "a basic express app writen in typescript",
   "main": "server.js",

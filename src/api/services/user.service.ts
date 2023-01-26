@@ -151,7 +151,7 @@ export class UserService implements IUserService {
     }
   }
 
-  async verifyEmail(resource: IVerifyEmail): Promise<any> {
+  async verifyEmail(resource: IVerifyEmail2): Promise<any> {
     try {
       return await User.findOneAndUpdate({id: resource.userId, emailToken: resource.token},
         { $set: { emailToken: null } })

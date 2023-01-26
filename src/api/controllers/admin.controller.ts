@@ -4,7 +4,7 @@ import * as password from '../utils/password'
 import * as validations from '../validations/user.validation'
 import decodeTokenMiddleware from '../middlewares/auth'
 import { Route, Res, TsoaResponse, Request, Body, Response, Tags, Example, Controller, Get, Post, Delete, Query, Path } from 'tsoa'
-import { ISignup, IVerifyAccount, IGetUser, IForgotPassword, IPatchUser, ILogin, IResetPassword } from '../services/interfaces/user'
+import { ISignup, IVerifyAccount, IGetUser, IForgotPassword, IPatchUser, ILogin, IResetPassword } from '../interfaces/user'
 import { signToken } from '../utils/tokenizer'
 
 @Route('admin')

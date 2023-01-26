@@ -1,7 +1,7 @@
 import Joi from 'joi';
 
-export const createProduct = Joi.object().keys({
-  name: Joi.string().required().messages({
+ const create = Joi.object().keys({
+  title: Joi.string().required().messages({
     'string.empty': 'Name is required',
   }),
   description: Joi.string().required().max(500).messages({
@@ -36,3 +36,5 @@ export const createProduct = Joi.object().keys({
   }),
   brand: Joi.string(),
 });
+
+export default create;

@@ -1,24 +1,7 @@
 import Product from '../models/product.model';
+import productValidation from '../validations/product.validation';
+import IProduct from '../interfaces/product.interface';
 
-interface IProduct {
-  in_stock: boolean;
-  quantity: number;
-  price: number;
-  discount: number;
-  tags: string[];
-  type: 'product' | 'service';
-  category: string;
-  description: string;
-  short_description: string;
-  images: string[];
-  quantity_sold: number;
-  quantity_viewed: number;
-  quantity_in_cart: number;
-  quantity_in_wishlist: number;
-  quantity_in_compare: number;
-  brand: string;
-  rating: number;
-}
 
 interface IProductService {
   create(resource: IProduct): Promise<any>;
@@ -36,50 +19,58 @@ interface IProductService {
 class ProductService implements IProductService {
   async create(resource: IProduct) {
     try {
+      await productValidation.validateAsync(resource);
       return await Product.create(resource);
-    } catch (error: any) {
-      throw new Error(error);
+    } catch (err: any) {
+            throw ({ message: err.message || 'Failed to create product', error: err, status: err.status || err.errorStatus || 401 })
+
     }
   }
 
   async update(id: string, resource: IProduct) {
     try {
+      await productValidation.validateAsync(resource);
       return await Product.findByIdAndUpdate(id, resource, { new: true })
         .orFail(new Error('Product not found'))
-    } catch (error: any) {
-      throw new Error(error);
+    } catch (err: any) {
+            throw ({ message: err.message || 'failed to update product', error: err, status: err.status || err.errorStatus || 401 })
+
     }
   }
 
   async delete(id: string) {
     try {
       return await Product.findByIdAndDelete(id).orFail(new Error('Product not found'));
-    } catch (error: any) {
-      throw new Error(error);
+    } catch (err: any) {
+            throw ({ message: err.message || 'failed to delete product', error: err, status: err.status || err.errorStatus || 404 })
+
     }
   }
 
   async get(id: string) {
     try {
       return await Product.findById(id).orFail(new Error('Product not found'));
-    } catch (error: any) {
-      throw new Error(error);
+    } catch (err: any) {
+            throw ({ message: err.message || 'Product not found', error: err, status: err.status || err.errorStatus || 404 })
+
     }
   }
 
   async getAll() {
     try {
       return await Product.find();
-    } catch (error: any) {
-      throw new Error(error);
+    } catch (err: any) {
+            throw ({ message: err.message || 'User not found', error: err, status: err.status || err.errorStatus || 404 })
+
     }
   } 
 
   async getProductsByCategory(category: string) {
     try {
      return await Product.find({ $where: `this.category == ${category}` }).orFail(new Error('No products found for this category'));
-    } catch (error: any) {
-      throw new Error(error);
+    } catch (err: any) {
+            throw ({ message: err.message || 'Product not found', error: err, status: err.status || err.errorStatus || 404 })
+
     }
       
   }
@@ -89,8 +80,11 @@ class ProductService implements IProductService {
     try {
       return await Product.find({ $where: `this.${characteristics} == ${value}` }).orFail(new Error('No products found for this category'));
     }
-    catch (error: any) {
-      throw new Error(error);
+    catch (err: any) {
+            throw ({ message: err.message || 'User not found', error: err, status: err.status || err.errorStatus || 404 })
+
     }
   }
 }
+
+export default new ProductService();

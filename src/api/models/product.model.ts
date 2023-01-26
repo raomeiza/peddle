@@ -2,6 +2,14 @@ import { Types, Schema, model } from 'mongoose';
 import userBasics from './common.model';
 
 const Product = model('Product', new Schema({
+  title: {
+    type: String,
+    max: 150,
+  },
+  uploaded_by: {
+    type: Types.ObjectId,
+    ref: 'User',
+  },
   in_stock: {
     type: Boolean,
     default: false,
@@ -77,5 +85,5 @@ const Product = model('Product', new Schema({
     type: Types.ObjectId,
     ref: 'Brand',
   },
-}), 'user');
+}), 'product');
 export default Product;

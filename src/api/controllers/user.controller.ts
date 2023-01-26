@@ -4,7 +4,7 @@ import * as password from '../utils/password'
 import * as validations from '../validations/user.validation'
 import decodeTokenMiddleware from '../middlewares/auth'
 import { Route, Res, TsoaResponse, Request, Body, Response, Tags, Example, Controller, Get, Post, Delete, Query, Path } from 'tsoa'
-import { ISignup, IVerifyAccount, IGetUser, IForgotPassword, IPatchUser, ILogin, IResetPassword } from '../services/interfaces/user'
+import { ISignup, IVerifyAccount, IGetUser, IForgotPassword, IPatchUser, ILogin, IResetPassword } from '../interfaces/user'
 import { signToken } from '../utils/tokenizer'
 
 @Route('user')
@@ -29,7 +29,7 @@ export class userController extends Controller {
   ): Promise<any> {
     try {
       if (payload.password !== payload.repeatPassword) {
-        throw { message: 'passwords do not match', status: 409}
+        sendError(400, { resp: { success: false, status: 400, message: { password: 'passwords do not match' } } })
       }
       await validations.signup.validateAsync(payload)
       // hash the payload.password

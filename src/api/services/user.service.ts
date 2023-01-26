@@ -4,7 +4,7 @@ import User from '../models/users.model'
 import { Types } from 'mongoose'
 import { checkPassword } from '../utils/password'
 import { signToken } from '../utils/tokenizer'
-import { IForgotPassword, ILogin, IPatchUser, IResetPassword, ISignup, IUserService, IVerifyAccount } from './interfaces/user'
+import { IForgotPassword, ILogin, IPatchUser, IResetPassword, ISignup, IUserService, IVerifyAccount } from '../interfaces/user'
 import logger from '../utils/logger'
 
 interface IVerifyEmail2 extends IVerifyAccount {

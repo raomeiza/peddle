@@ -9,11 +9,10 @@ import { RegisterRoutes } from './routes/routes';
 import { NODE_ENV, BASE_URL, FRONT_END_PATH, PUBLIC_DIR  } from '../config';
 import express from "express";
 import basicAuth from 'express-basic-auth';
+import bodyParser from 'body-parser';
 import logger from './utils/logger';
-const swaggerDocument = require('../../docs/swagger.json');
-//import './telegram/telegram';
-
 import expressErrorHandlerMiddleware from './middlewares/express.error';
+const swaggerDocument = require('../../docs/swagger.json');
 
 // Instance of express
 const app: express.Application = express();
@@ -23,13 +22,14 @@ const app: express.Application = express();
 InitiateDB();
 
 // Middlewares
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json({
   verify: (req, res, buf) => {
     req.rawBody = buf.toString();
   }
 },
 ));
+app.use(bodyParser.json({ limit: '50mb' }));
 app.use(compression());
 // set end point for ping and respond with pong
 app.get('/ping', (req, res) => {
@@ -61,12 +61,6 @@ app.use('/app', (req, res, next) => {
     });
   } else {
     next()
-    // getting here means the content was not found in the backend
-    // so we send the user to the frontend and append the url as originalUrl to the query string
-    // but split the originalUrl using '/app' as the separator
-    // const originalUrl = req.originalUrl.split('/app')[1];
-    // console.log('origin', originalUrl)
-    // res.redirect(`${BASE_URL}/app?original_url=${originalUrl}`);
   }
 });
 

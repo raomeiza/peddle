@@ -1,10 +1,10 @@
-import mongoose, {Types, Schema, model} from "mongoose"
-import userBasics from "./common.model";
+import { Types, Schema, model } from 'mongoose';
+import userBasics from './common.model';
 
-const User = mongoose.model('User', new Schema({
+const Product = model('Product', new Schema({
   in_stock: {
     type: Boolean,
-    default: false
+    default: false,
   },
   quantity: {
     Number,
@@ -77,5 +77,5 @@ const User = mongoose.model('User', new Schema({
     type: Types.ObjectId,
     ref: 'Brand',
   },
-}).add(userBasics), 'user');
-export default User;
+}), 'user');
+export default Product;

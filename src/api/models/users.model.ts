@@ -1,14 +1,15 @@
-import {Types, Schema, model} from "mongoose"
-import userBasics from "./common.model";
+import { Types, Schema, model } from 'mongoose';
+import userBasics from './common.model';
 
 const User = model('User', new Schema({
   password: {
     type: String,
     max: 150,
+    required: true,
   },
   is_active: {
     type: Boolean,
-    default: false
+    default: false,
   },
   last_seen: {
     Date,
@@ -20,7 +21,7 @@ const User = model('User', new Schema({
   emailToken: {
     type: String,
     length: 5,
-    default: null
+    default: null,
   },
   passwordResetToken: {
     type: String,
@@ -42,6 +43,6 @@ const User = model('User', new Schema({
   blockedReason: {
     type: String,
     default: null,
-  }
+  },
 }).add(userBasics), 'user');
 export default User;

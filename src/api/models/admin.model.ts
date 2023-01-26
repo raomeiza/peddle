@@ -1,5 +1,5 @@
-import mongoose, {Types, Schema, model} from "mongoose"
-import userBasics from "./common.model";
+import mongoose, { Types, Schema, model } from 'mongoose';
+import userBasics from './common.model';
 
 const Admin = mongoose.model('Admin', new Schema({
   password: {
@@ -8,7 +8,7 @@ const Admin = mongoose.model('Admin', new Schema({
   },
   is_active: {
     type: Boolean,
-    default: false
+    default: false,
   },
   last_seen: {
     Date,
@@ -20,7 +20,7 @@ const Admin = mongoose.model('Admin', new Schema({
   emailToken: {
     type: String,
     length: 5,
-    default: null
+    default: null,
   },
   passwordResetToken: {
     type: String,
@@ -42,6 +42,10 @@ const Admin = mongoose.model('Admin', new Schema({
   blockedReason: {
     type: String,
     default: null,
-  }
+  },
+  is_admin: {
+    type: Boolean,
+    default: true,
+  },
 }).add(userBasics), 'admin');
 export default Admin;

@@ -5,9 +5,13 @@
   "main": "server.js",
   "scripts": {
     "start": "node ./dist/app.js",
+    "start:ts": "ts-node ./src/app.ts --transpile-only",
     "lint": "eslint ./src --ext ts --ext .js --fix",
-    "build": "tsoa spec && tsoa routes && tsc -p .",
+    "build:dev": "tsc -p .",
+    "build:watch": "tsc -p . --watch",
+    "build": "tsoa routes && tsoa spec && tsc -p . ",
     "routes": "tsoa routes",
+    "spec": "tsoa spec",
     "swagger": "tsoa spec"
   },
   "author": "Abdulraheem A omeiza",

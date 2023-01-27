@@ -31,8 +31,14 @@ import Joi from 'joi';
   discount: Joi.number().messages({
     'number.base': 'Discount must be a number',
   }),
+  in_stock: Joi.boolean().messages({
+    'boolean.base': 'In stock must be a boolean',
+  }),
   short_description: Joi.string().max(150).messages({
     'string.max': 'Short description must be less than 150 characters',
+  }),
+  uploaded_by: Joi.string().required().messages({
+    'string.empty': 'Uploaded by is required',
   }),
   brand: Joi.string(),
 });

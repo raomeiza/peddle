@@ -34,8 +34,8 @@ const Product = model('Product', new Schema({
     enum: ['product', 'service'],
   },
   category: {
-    type: Types.ObjectId,
-    ref: 'Category',
+    type: String,
+    
   },
   description: {
     type: String,

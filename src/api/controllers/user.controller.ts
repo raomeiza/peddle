@@ -200,7 +200,7 @@ export class userController extends Controller {
   @Example({
     userId: '60a1c1c1c1c1c1c1c1c1c1c1',
   })
-  @Delete(':userId')
+  @Delete('delete')
   @Response(201, 'User deleted successfully')
   // email not found
   @Response(404, 'User not found')

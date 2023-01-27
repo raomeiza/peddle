@@ -1,5 +1,4 @@
 import Product from '../models/product.model';
-import productValidation from '../validations/product.validation';
 import IProduct from '../interfaces/product.interface';
 
 
@@ -19,7 +18,6 @@ interface IProductService {
 class ProductService implements IProductService {
   async create(resource: IProduct) {
     try {
-      await productValidation.validateAsync(resource);
       return await Product.create(resource);
     } catch (err: any) {
             throw ({ message: err.message || 'Failed to create product', error: err, status: err.status || err.errorStatus || 401 })
@@ -29,7 +27,6 @@ class ProductService implements IProductService {
 
   async update(id: string, resource: IProduct) {
     try {
-      await productValidation.validateAsync(resource);
       return await Product.findByIdAndUpdate(id, resource, { new: true })
         .orFail(new Error('Product not found'))
     } catch (err: any) {

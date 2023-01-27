@@ -134,7 +134,7 @@ export class ProductController {
   @Response(200, 'Product deleted successfully')
   @Response(400, 'Bad request')
   @Response(401, 'Not allowed')
-  @Delete("delete")
+  @Delete("{productId}")
   public async deleteProduct(
     @Res() sendError: TsoaResponse<400, { resp: { success: false, status: number, message: object } }>,
     @Res() sendSuccess: TsoaResponse<200, { resp: { success: true, data: any } }>,
@@ -157,7 +157,7 @@ export class ProductController {
     }
   }
 
-  @Get("get-producst")
+  @Get("products")
   @Response(200, 'Products fetched successfully')
   @Response(404, 'Products not found')
   public async getProducts(

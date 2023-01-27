@@ -12,12 +12,16 @@ interface IVerifyEmail2 extends IVerifyAccount {
 }
 
 export class UserService implements IUserService {
+  constructor() {
+    this.model = User
+  }
+  model: any
   // register a new user
   async signup(resource: ISignup): Promise<any> {
     try {
       const token = await generateToken();
       
-      const user = await User.create({...resource, emailToken: token});
+      const user = await this.model.create({...resource, emailToken: token});
       return await getResponse(user);
     } catch (err: any) {
       throw ({ message: err.message || 'User not created', error: err, status: err.status || err.errorStatus || 404 })
@@ -28,7 +32,7 @@ export class UserService implements IUserService {
   async verifyToken(resource: { userId: string, token: number; tokenRoute: 'email' | 'mobile' }): Promise<any> {
     try {
       const { userId, token, tokenRoute } = resource;
-      const worker = await User.findOneAndUpdate({ _id: userId, [`${tokenRoute}Token`]: token, [`${tokenRoute}Token`]: null }, {$set: {[tokenRoute]: null}} ).orFail(() => <any>'Token not valid');
+      const worker = await this.model.findOneAndUpdate({ _id: userId, [`${tokenRoute}Token`]: token, [`${tokenRoute}Token`]: null }, {$set: {[tokenRoute]: null}} ).orFail(() => <any>'Token not valid');
       return await getResponse(worker);
     } catch (err: any) {
       throw ({ message: err.message || 'Token not sent', error: err, status: err.status || err.errorStatus || 404 })
@@ -39,7 +43,7 @@ export class UserService implements IUserService {
   async createProfile(resource: IPatchUser): Promise<any> {
     try {
       const { email, password, firstName, lastName, mobile } = resource;
-      const user = await User.findByIdAndUpdate({ email }, { $set: { firstName, lastName, mobile, password } }).orFail(() => <any>'User not found');
+      const user = await this.model.findByIdAndUpdate({ email }, { $set: { firstName, lastName, mobile, password } }).orFail(() => <any>'User not found');
       return await getResponse(user);
     } catch (err: any) {
       throw ({ message: err.message || 'User not created', error: err, status: err.status || err.errorStatus || 404 })
@@ -57,7 +61,7 @@ export class UserService implements IUserService {
       const token = await generateToken();
       const { email } = resource;
       //find worker by id and update the token
-      const worker = await User.findOneAndUpdate({ email }, { $set: { emailToken: token } }).orFail(() => <any>'User not found');
+      const worker = await this.model.findOneAndUpdate({ email }, { $set: { emailToken: token } }).orFail(() => <any>'User not found');
       return true;
     } catch (err: any) {
       throw({ message: err.message || 'User not found', error: err, status: err.status || err.errorStatus || 404 })
@@ -67,8 +71,8 @@ export class UserService implements IUserService {
   async login(resource: ILogin): Promise<any> {
     try {
       const { email, password } = resource;
-      const thisUser = await User.findOne({ email }).orFail(() => <any>'User not found');
-      const isPasswordValid = await checkPassword(password, thisUser.password);
+      const thisUser = await this.model.findOne({ email }).orFail(() => <any>'User not found');
+      const isPasswordValid = await checkPassword(password,thisUser.password);
       if (!isPasswordValid) {
         throw ({ message: 'Email or password incorrect', status: 404 })
       }
@@ -81,7 +85,7 @@ export class UserService implements IUserService {
   // update the user's profile
   async updateProfile( id:Types.ObjectId, resource: IPatchUser): Promise<any> {
     try {
-      return await User.findByIdAndUpdate(id, resource, { new: true }).orFail(() => <any>'User not found');
+      return await this.model.findByIdAndUpdate(id, resource, { new: true }).orFail(() => <any>'User not found');
     } catch (err: any) {
       throw ({ message: err.message || 'Profile update failed', error: err, status: err.status || err.errorStatus || 404 })
     }
@@ -91,7 +95,7 @@ export class UserService implements IUserService {
 
   async getUser(resource: { userId: string }): Promise<any> {
     try {
-      return await User.findById(resource.userId).orFail(():any => 'User not found');
+      return await this.model.findById(resource.userId).orFail(():any => 'User not found');
     } catch (ex:any) {
       logger.log({
         level: 'error',
@@ -101,27 +105,43 @@ export class UserService implements IUserService {
     }
   }
 
-  async getUsers(payload = <any>{search_by: '', search_value: '', page: 1, limit: 10, skip: '', user:null}): Promise<any> {
+  async getUsers(): Promise<any> {
+      try {
+        let userQuery =  this.model.find()
+        // omit password, token, _iv, _v, _id, email_token, mobile_token, password_reset_token
+        userQuery.select('-password -token -_iv -_v -_id -email_token -mobile_token -password_resetToken');
+
+        return await userQuery.exec();
+      } catch (ex:any) {
+        logger.log({
+          level: 'error',
+          message: ex.message,
+        });
+        isCastError(ex) ? handleCastErrorExceptionForInvalidObjectId() : throwError(ex);
+      }
+  }
+
+  async findUsers(payload = <any>{search_by: '', search_value: '', page: 1, limit: 10, skip: '', user:null}): Promise<any> {
     try {
       // if no by or value is provided, return all converts
-      const workers = User.find()
+      const users = this.model.find()
       if (payload.search_by && payload.search_value) {
-        workers.where(payload.search_by).equals(payload.search_value)
+        users.where(payload.search_by).equals(payload.search_value)
       }
       if (payload.skip) {
-        workers.skip(payload.skip)
+        users.skip(payload.skip)
       }
       if (payload.page && payload.limit) {
-        workers.limit(payload.limit).skip(payload.page * payload.limit)
+        users.limit(payload.limit).skip(payload.page * payload.limit)
       }
       // omit the password, _id, _iv, passwordResetToken, passwordResetExpires, and invitationID fields
-      workers.select('-password -_id -_iv -passwordResetToken -passwordResetExpires -invitationID -logins')
-      const workers_:any = await workers.exec()
+      users.select('-password -_id -_iv -passwordResetToken -passwordResetExpires -invitationID -logins')
+      const users_:any = await users.exec()
       // if there is error, throw it
-      if (workers_ instanceof Error) {
-        throw workers_
+      if (users_ instanceof Error) {
+        throw users_
       }
-      return await customResponse(workers_)
+      return await customResponse(users_)
     } catch (err: any) {
       throw ({ message: err.message || 'Error fetching workers', error: err, status: err.status || err.errorStatus || 404 })
     }
@@ -131,7 +151,7 @@ export class UserService implements IUserService {
   async forgotPassword(payload: IForgotPassword): Promise<any> {
     try {
       const token = await generateToken();
-      const worker = await User.findOneAndUpdate({ email: payload.email }, { passwordResetToken: token }).orFail(() => <any>'User not found');
+      const worker = await this.model.findOneAndUpdate({ email: payload.email }, { passwordResetToken: token }).orFail(() => <any>'User not found');
       // @ts-ignore
       //validator.isMobilePhone(payload.email, 'en-NG') ? await sendSms(emailorMobile, worker.passwordResetToken) : await sendMail(worker.email, 'Password Reset Token', `${worker.passwordResetToken}`);
       return true;
@@ -142,7 +162,7 @@ export class UserService implements IUserService {
 
   async resetPassword(resource: IResetPassword): Promise<any> {
     try {
-      return await User.findOneAndUpdate({email: resource.email},
+      return await this.model.findOneAndUpdate({email: resource.email},
         { $set: { password: resource.password, passwordResetToken: null } })
         .orFail(() => <any>'User not found');
 
@@ -153,7 +173,7 @@ export class UserService implements IUserService {
 
   async verifyEmail(resource: IVerifyEmail2): Promise<any> {
     try {
-      return await User.findOneAndUpdate({id: resource.userId, emailToken: resource.token},
+      return await this.model.findOneAndUpdate({id: resource.userId, emailToken: resource.token},
         { $set: { emailToken: null } })
         .orFail(() => <any>'User not found');
 
@@ -165,7 +185,7 @@ export class UserService implements IUserService {
 
   async delete(resource: { userId: string; }): Promise<any> {
     try {
-      return await User.findByIdAndDelete(resource.userId).orFail(() => <any>'User not found');
+      return await this.model.findByIdAndDelete(resource.userId).orFail(() => <any>'User not found');
     } catch (err: any) {
       throw ({ message: err.message || 'User not found', error: err, status: err.status || err.errorStatus || 404 })
     }
@@ -183,7 +203,7 @@ async function getResponse(user: { toObject: () => any }, isLogin?: boolean) {
   delete userObj.__v;
   delete userObj._id
 
-  // if the user is logging in, create a token using tokenizer.generateToken and using user.userId and unit as argument
+  // if the user is logging in, create a token using tokenizer.generateToken and using this.model.userId and unit as argument
   return {
     user: userObj,
   };

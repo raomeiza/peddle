@@ -1,11 +1,11 @@
 import { handleErrorResponse, handleSuccessResponse } from '../utils/response-handler'
-import userService from '../services/user.service'
+import adminService from '../services/admin.service'
 import * as password from '../utils/password'
 import * as validations from '../validations/user.validation'
 import decodeTokenMiddleware from '../middlewares/auth'
 import { Route, Res, TsoaResponse, Request, Body, Response, Tags, Example, Controller, Get, Post, Delete, Query, Path } from 'tsoa'
 import { ISignup, IVerifyAccount, IGetUser, IForgotPassword, IPatchUser, ILogin, IResetPassword } from '../interfaces/user'
-import { signToken } from '../utils/tokenizer'
+import { refreshToken, signToken } from '../utils/tokenizer'
 
 @Route('admin')
 @Tags('Admin')
@@ -35,8 +35,8 @@ export class AdminController extends Controller {
       // hash the payload.password
       const hashedPassword = await password.hashPassword(payload.password)
       // create the user
-      const user = await userService.signup({ ...payload, password: hashedPassword })
-      user.jwt = await signToken({ userId: user._id, email: user.email, is_admin: user.is_admin || false })
+      const user = await adminService.signup({ ...payload, password: hashedPassword })
+      user.jwt = await signToken({ userId: user._id, email: user.email, is_admin: user.is_admin })
       // send the user a verification email
       sendSuccess(201, { resp: { success: true, data: user } }, /* set the jwt */ { 'x-auth-token': user.jwt })
     } catch (err: any) {
@@ -64,7 +64,7 @@ export class AdminController extends Controller {
     try {
       await validations.verifyToken.validateAsync(payload)
       // verify the token
-      const user = await userService.verifyToken({...payload, tokenRoute: 'email'})
+      const user = await adminService.verifyToken({...payload, tokenRoute: 'email'})
       user.jwt = await signToken({ userId: user._id, email: user.email, is_admin: user.is_admin || false })
       sendSuccess(200, { resp: { success: true, data: user } }, /* set the jwt */ { 'x-auth-token': user.jwt })
     } catch (err: any) {
@@ -98,7 +98,7 @@ export class AdminController extends Controller {
     try {
       await validations.profile.validateAsync(payload)
       // verify the token
-      const user = await userService.createProfile(payload)
+      const user = await adminService.createProfile(payload)
       user.jwt = await signToken({ userId: user._id, email: user.email, is_admin: user.is_admin || false })
       sendSuccess(200, { resp: { success: true, data: user } }, /* set the jwt */ { 'x-auth-token': user.jwt })
     } catch (err: any) {
@@ -124,7 +124,7 @@ export class AdminController extends Controller {
     try {
       await validations.forgotPassword.validateAsync(payload)
       // verify the token
-      const user = await userService.forgotPassword(payload)
+      const user = await adminService.forgotPassword(payload)
       sendSuccess(200, { resp: { success: true, data: user } }, /* set the jwt */ { 'x-auth-token': user.jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
@@ -152,8 +152,10 @@ export class AdminController extends Controller {
     try {
       await validations.login.validateAsync(payload)
       // verify the token
-      const user = await userService.login(payload)
-      user.jwt = await signToken({ userId: user._id, email: user.email, is_admin: user.is_admin || false })
+      const user = await adminService.login(payload)
+      const { userId, email, is_admin } = user.user
+      console.log(userId, email, is_admin)
+      user.jwt = await signToken({ userId, email, is_admin })
       sendSuccess(200, { resp: { success: true, data: user } }, /* set the jwt */ { 'x-auth-token': user.jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
@@ -166,7 +168,7 @@ export class AdminController extends Controller {
   @Example({
     userId: '60a1c1c1c1c1c1c1c1c1c1c1',
   })
-  @Get(':userId')
+  @Get('user/{userId}')
   @Response(201, 'Profile fetched successfully')
   // email not found
   @Response(404, 'User not found')
@@ -180,14 +182,14 @@ export class AdminController extends Controller {
 
       // authenticate the user
       await decodeTokenMiddleware(request)
-      if (request.decodedUser.userId !== userId && request.decodedUser.role !== 'admin'){ 
-        return await handleErrorResponse(sendError, {status: 401, message: 'Unauthorized'})
+      const thisUser = request.decodedUser
+      if(!thisUser.is_admin) {
+        throw { status: 401, message: 'Unauthorized' }
       }
-
       await validations.isMongoIdValid(userId)
       // verify the token
-      const user = await userService.getUser({userId})
-      user.jwt = await signToken({ userId: request.decodedUser.userId, email: request.decodedUser.email, is_admin: request.decodedUser.is_admin || false })
+      const user = await adminService.getUser({userId})
+      user.jwt = await refreshToken(thisUser)
       sendSuccess(200, { resp: { success: true, data: user } }, /* set the jwt */ { 'x-auth-token': user.jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
@@ -206,23 +208,23 @@ export class AdminController extends Controller {
     @Res() sendSuccess: TsoaResponse<200, { resp: { success: true, data: any } }>,
     @Res() sendError: TsoaResponse<400 | 404 | 409, { resp: { success: false, status: number, message: object } }>,
     @Request() request: any,
-    @Query() userId: string
   ): Promise<any> {
     try {
-
       // authenticate the user
       await decodeTokenMiddleware(request)
-      if(!request.decodedUser.isAdmin) {
+      const thisUser = request.decodedUser
+      if(!thisUser.is_admin) {
         throw { status: 401, message: 'Unauthorized' }
       }
-      // verify the token
-      const user = await userService.getUsers(userId)
-      user.jwt = await signToken({ userId: user._id, email: user.email, is_admin: user.is_admin || false })
-      sendSuccess(200, { resp: { success: true, data: user } }, /* set the jwt */ { 'x-auth-token': user.jwt })
+      const users = await adminService.getUsers()
+      users.jwt = await refreshToken(thisUser)
+      sendSuccess(200, { resp: { success: true, data: users } }, /* set the jwt */ { 'x-auth-token': users.jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
     }
+    return {status: 200, message: 'hello'}
   }
+
 
   /**
    * @description - delete a user
@@ -230,7 +232,7 @@ export class AdminController extends Controller {
   @Example({
     userId: '60a1c1c1c1c1c1c1c1c1c1c1',
   })
-  @Delete('user')
+  @Delete(':userId')
   @Response(201, 'User deleted successfully')
   // email not found
   @Response(404, 'User not found')
@@ -243,15 +245,15 @@ export class AdminController extends Controller {
     try {
       // authenticate the user
       await decodeTokenMiddleware(request)
-      if(!request.decodedUser.isAdmin) {
+      const thisUser = request.decodedUser
+      if(!thisUser.is_admin) {
         throw { status: 401, message: 'Unauthorized' }
       }
-
       await validations.isMongoIdValid(payload.userId)
       // verify the token
-      const user = await userService.delete(payload)
-      user.jwt = await signToken({ userId: user._id, email: user.email, is_admin: user.is_admin || false })
-        sendSuccess(200, { resp: { success: true, data: user } }, /* set the jwt */ { 'x-auth-token': user.jwt })
+      const user = await adminService.delete(payload)
+      user.jwt = await refreshToken(thisUser)
+      sendSuccess(200, { resp: { success: true, data: user } }, /* set the jwt */ { 'x-auth-token': user.jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
     }

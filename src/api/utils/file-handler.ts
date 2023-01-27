@@ -104,6 +104,9 @@ export default class handleFile {
 
 }
 
+// github command for setting remote
+
+
 const fileFilter = (req: express.Request, file: any, encType: any, cb: any) => {
   if (!encType) {
     cb(null, true)

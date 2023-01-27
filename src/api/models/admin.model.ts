@@ -13,16 +13,16 @@ const Admin = mongoose.model('Admin', new Schema({
   last_seen: {
     Date,
   },
-  emailVerified: {
+  email_verified: {
     type: Boolean,
     default: false,
   },
-  emailToken: {
+  email_token: {
     type: String,
     length: 5,
     default: null,
   },
-  passwordResetToken: {
+  password_reset_token: {
     type: String,
     length: 5,
   },
@@ -30,16 +30,16 @@ const Admin = mongoose.model('Admin', new Schema({
     type: Boolean,
     default: false,
   },
-  blockedBy: {
+  blocked_by: {
     type: mongoose.Types.ObjectId,
     ref: 'Worker',
     default: null,
   },
-  blockedAt: {
+  blocked_at: {
     type: Date,
     default: null,
   },
-  blockedReason: {
+  blocke_reason: {
     type: String,
     default: null,
   },

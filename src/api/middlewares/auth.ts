@@ -10,6 +10,7 @@ async function decodeTokenMiddleware(req: any): Promise<void> {
     }
     try {
       req.decodedUser = await verifyToken(token);
+      return;
     } catch (err: any) {
       logger.error(err);
       throw new JsonWebTokenError('Invalid token');

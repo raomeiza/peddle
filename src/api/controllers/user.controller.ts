@@ -166,7 +166,7 @@ export class userController extends Controller {
   @Example({
     userId: '60a1c1c1c1c1c1c1c1c1c1c1',
   })
-  @Get(':userId')
+  @Get('user/{userId}')
   @Response(201, 'Profile fetched successfully')
   // email not found
   @Response(404, 'User not found')
@@ -195,42 +195,12 @@ export class userController extends Controller {
   }
 
   /**
-   * @description - get all users
-   * */
-  @Example({})
-  @Get('users')
-  @Response(201, 'Users fetched successfully')
-  // email not found
-  @Response(404, 'Users not found')
-  public async getAllUsers(
-    @Res() sendSuccess: TsoaResponse<200, { resp: { success: true, data: any } }>,
-    @Res() sendError: TsoaResponse<400 | 404 | 409, { resp: { success: false, status: number, message: object } }>,
-    @Request() request: any,
-    @Query() userId: string
-  ): Promise<any> {
-    try {
-
-      // authenticate the user
-      await decodeTokenMiddleware(request)
-      if(!request.decodedUser.isAdmin) {
-        throw { status: 401, message: 'Unauthorized' }
-      }
-      // verify the token
-      const user = await userService.getUsers(userId)
-      user.jwt = await signToken({ userId: user._id, email: user.email, is_admin: user.is_admin || false })
-      sendSuccess(200, { resp: { success: true, data: user } }, /* set the jwt */ { 'x-auth-token': user.jwt })
-    } catch (err: any) {
-      return await handleErrorResponse(sendError, err)
-    }
-  }
-
-  /**
    * @description - delete a user
    * */
   @Example({
     userId: '60a1c1c1c1c1c1c1c1c1c1c1',
   })
-  @Delete('user')
+  @Delete(':userId')
   @Response(201, 'User deleted successfully')
   // email not found
   @Response(404, 'User not found')
@@ -243,7 +213,7 @@ export class userController extends Controller {
     try {
       // authenticate the user
       await decodeTokenMiddleware(request)
-      if(!request.decodedUser.isAdmin) {
+      if(!request.decodedUser.is_admin) {
         throw { status: 401, message: 'Unauthorized' }
       }
 

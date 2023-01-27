@@ -1,4 +1,4 @@
-import { Types } from "mongoose";
+import mongoose, { Types } from "mongoose";
 
 export interface ISignup {
   email: string;
@@ -40,6 +40,7 @@ export interface IPatchUser {
   mobile: string;
   blocked: boolean;
 }
+
 
 export interface IUserService {
   signup(resource: ISignup): Promise<any>;

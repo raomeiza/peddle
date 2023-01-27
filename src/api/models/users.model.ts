@@ -14,16 +14,16 @@ const User = model('User', new Schema({
   last_seen: {
     Date,
   },
-  emailVerified: {
+  email_verified: {
     type: Boolean,
     default: false,
   },
-  emailToken: {
+  email_token: {
     type: String,
     length: 5,
     default: null,
   },
-  passwordResetToken: {
+  password_resetToken: {
     type: String,
     length: 5,
   },
@@ -31,16 +31,16 @@ const User = model('User', new Schema({
     type: Boolean,
     default: false,
   },
-  blockedBy: {
+  blocked_by: {
     type: Types.ObjectId,
     ref: 'Worker',
     default: null,
   },
-  blockedAt: {
+  blocked_at: {
     type: Date,
     default: null,
   },
-  blockedReason: {
+  block_reason: {
     type: String,
     default: null,
   },

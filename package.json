@@ -36,7 +36,8 @@
     "swagger-ui-express": "^4.3.0",
     "validator": "^13.7.0",
     "winston": "^3.7.2",
-    "winston-daily-rotate-file": "^4.6.1"
+    "winston-daily-rotate-file": "^4.6.1",
+    "typescript": "^4.9.4"
   },
   "devDependencies": {
     "@types/compression": "^1.7.2",
@@ -51,7 +52,6 @@
     "eslint-plugin-yaml": "^0.5.0",
     "eslint-plugin-yml": "^0.14.0",
     "flow": "^0.2.3",
-    "tsoa": "^5.0.0",
-    "typescript": "^4.9.4"
+    "tsoa": "^5.0.0"
   }
 }

@@ -8,9 +8,9 @@
     "start": "node ./dist/app.js --watch-paths ./dist",
     "start:ts": "ts-node ./src/app.ts --transpile-only",
     "lint": "eslint ./src --ext ts --ext .js --fix",
-    "build:dev": "tsc -p . --watch",
+    "build:dev": "tsoa routes && tsoa spec && tsc -p . --watch",
     "build:watch": "tsc -p . --watch",
-    "build": "tsoa routes && tsoa spec && tsc -p . ",
+    "build": " tsc -p . ",
     "routes": "tsoa routes",
     "spec": "tsoa spec",
     "swagger": "tsoa spec"

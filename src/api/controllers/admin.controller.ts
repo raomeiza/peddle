@@ -23,8 +23,8 @@ export class AdminController extends Controller {
   // email already in use
   @Response(409, 'email already in use')
   public async signup(
-    @Res() sendSuccess: TsoaResponse<201, { resp: { success: true, data: any } }>,
-    @Res() sendError: TsoaResponse<400, { resp: { success: false, status: number, message: object } }>,
+    @Res() sendSuccess: TsoaResponse<201, { success: true, data: any }>,
+    @Res() sendError: TsoaResponse<400, { success: false, status: number, message: object }>,
     @Body() payload: ISignup
   ): Promise<any> {
     try {
@@ -38,7 +38,7 @@ export class AdminController extends Controller {
       const user = await adminService.signup({ ...payload, password: hashedPassword })
       user.jwt = await signToken({ userId: user._id, email: user.email, is_admin: user.is_admin })
       // send the user a verification email
-      sendSuccess(201, { resp: { success: true, data: user } }, /* set the jwt */ { 'x-auth-token': user.jwt })
+      sendSuccess(201, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': user.jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
     }
@@ -57,8 +57,8 @@ export class AdminController extends Controller {
   // token not valid
   @Response(409, 'token not valid')
   public async verifyToken(
-    @Res() sendSuccess: TsoaResponse<200, { resp: { success: true, data: any } }>,
-    @Res() sendError: TsoaResponse<400 | 404 | 409, { resp: { success: false, status: number, message: object } }>,
+    @Res() sendSuccess: TsoaResponse<200, { success: true, data: any }>,
+    @Res() sendError: TsoaResponse<400 | 404 | 409, { success: false, status: number, message: object }>,
     @Body() payload: IVerifyAccount
   ): Promise<any> {
     try {
@@ -66,7 +66,7 @@ export class AdminController extends Controller {
       // verify the token
       const user = await adminService.verifyToken({...payload, tokenRoute: 'email'})
       user.jwt = await signToken({ userId: user._id, email: user.email, is_admin: user.is_admin || false })
-      sendSuccess(200, { resp: { success: true, data: user } }, /* set the jwt */ { 'x-auth-token': user.jwt })
+      sendSuccess(200, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': user.jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
     }
@@ -91,8 +91,8 @@ export class AdminController extends Controller {
   // token not valid
   @Response(409, 'token not valid')
   public async createProfile(
-    @Res() sendSuccess: TsoaResponse<200, { resp: { success: true, data: any } }>,
-    @Res() sendError: TsoaResponse<400 | 404 | 409, { resp: { success: false, status: number, message: object } }>,
+    @Res() sendSuccess: TsoaResponse<200, { success: true, data: any }>,
+    @Res() sendError: TsoaResponse<400 | 404 | 409, { success: false, status: number, message: object }>,
     @Body() payload: IPatchUser
   ): Promise<any> {
     try {
@@ -100,7 +100,7 @@ export class AdminController extends Controller {
       // verify the token
       const user = await adminService.createProfile(payload)
       user.jwt = await signToken({ userId: user._id, email: user.email, is_admin: user.is_admin || false })
-      sendSuccess(200, { resp: { success: true, data: user } }, /* set the jwt */ { 'x-auth-token': user.jwt })
+      sendSuccess(200, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': user.jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
     }
@@ -117,15 +117,15 @@ export class AdminController extends Controller {
   // token not valid
   @Response(409, 'token not valid')
   public async forgotPassword(
-    @Res() sendSuccess: TsoaResponse<200, { resp: { success: true, data: any } }>,
-    @Res() sendError: TsoaResponse<400 | 404 | 409, { resp: { success: false, status: number, message: object } }>,
+    @Res() sendSuccess: TsoaResponse<200, { success: true, data: any }>,
+    @Res() sendError: TsoaResponse<400 | 404 | 409, { success: false, status: number, message: object }>,
     @Body() payload: IForgotPassword
   ): Promise<any> {
     try {
       await validations.forgotPassword.validateAsync(payload)
       // verify the token
       const user = await adminService.forgotPassword(payload)
-      sendSuccess(200, { resp: { success: true, data: user } }, /* set the jwt */ { 'x-auth-token': user.jwt })
+      sendSuccess(200, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': user.jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
     }
@@ -145,8 +145,8 @@ export class AdminController extends Controller {
   // password incorrect
   @Response(409, 'password incorrect')
   public async login(
-    @Res() sendSuccess: TsoaResponse<200, { resp: { success: true, data: any } }>,
-    @Res() sendError: TsoaResponse<400 | 404 | 409, { resp: { success: false, status: number, message: object } }>,
+    @Res() sendSuccess: TsoaResponse<200, { success: true, data: any }>,
+    @Res() sendError: TsoaResponse<400 | 404 | 409, { success: false, status: number, message: object }>,
     @Body() payload: ILogin
   ): Promise<any> {
     try {
@@ -154,9 +154,8 @@ export class AdminController extends Controller {
       // verify the token
       const user = await adminService.login(payload)
       const { userId, email, is_admin } = user.user
-      console.log(userId, email, is_admin)
       user.jwt = await signToken({ userId, email, is_admin })
-      sendSuccess(200, { resp: { success: true, data: user } }, /* set the jwt */ { 'x-auth-token': user.jwt })
+      sendSuccess(200, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': user.jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
     }
@@ -173,8 +172,8 @@ export class AdminController extends Controller {
   // email not found
   @Response(404, 'User not found')
   public async getUser(
-    @Res() sendSuccess: TsoaResponse<200, { resp: { success: true, data: any } }>,
-    @Res() sendError: TsoaResponse<400 | 404 | 409, { resp: { success: false, status: number, message: object } }>,
+    @Res() sendSuccess: TsoaResponse<200, { success: true, data: any }>,
+    @Res() sendError: TsoaResponse<400 | 404 | 409, { success: false, status: number, message: object }>,
     @Path() userId: string,
     @Request() request: any
   ): Promise<any> {
@@ -190,7 +189,7 @@ export class AdminController extends Controller {
       // verify the token
       const user = await adminService.getUser({userId})
       user.jwt = await refreshToken(thisUser)
-      sendSuccess(200, { resp: { success: true, data: user } }, /* set the jwt */ { 'x-auth-token': user.jwt })
+      sendSuccess(200, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': user.jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
     }
@@ -205,8 +204,8 @@ export class AdminController extends Controller {
   // email not found
   @Response(404, 'Users not found')
   public async getAllUsers(
-    @Res() sendSuccess: TsoaResponse<200, { resp: { success: true, data: any } }>,
-    @Res() sendError: TsoaResponse<400 | 404 | 409, { resp: { success: false, status: number, message: object } }>,
+    @Res() sendSuccess: TsoaResponse<200, { success: true, data: any }>,
+    @Res() sendError: TsoaResponse<400 | 404 | 409, { success: false, status: number, message: object }>,
     @Request() request: any,
   ): Promise<any> {
     try {
@@ -218,7 +217,7 @@ export class AdminController extends Controller {
       }
       const users = await adminService.getUsers()
       users.jwt = await refreshToken(thisUser)
-      sendSuccess(200, { resp: { success: true, data: users } }, /* set the jwt */ { 'x-auth-token': users.jwt })
+      sendSuccess(200, { success: true, data: users }, /* set the jwt */ { 'x-auth-token': users.jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
     }
@@ -237,8 +236,8 @@ export class AdminController extends Controller {
   // email not found
   @Response(404, 'User not found')
   public async deleteUser(
-    @Res() sendSuccess: TsoaResponse<200, { resp: { success: true, data: any } }>,
-    @Res() sendError: TsoaResponse<400 | 404 | 409, { resp: { success: false, status: number, message: object } }>,
+    @Res() sendSuccess: TsoaResponse<200, { success: true, data: any }>,
+    @Res() sendError: TsoaResponse<400 | 404 | 409, { success: false, status: number, message: object }>,
     @Request() request: any,
     @Body() payload: IGetUser
   ): Promise<any> {
@@ -253,7 +252,7 @@ export class AdminController extends Controller {
       // verify the token
       const user = await adminService.delete(payload)
       user.jwt = await refreshToken(thisUser)
-      sendSuccess(200, { resp: { success: true, data: user } }, /* set the jwt */ { 'x-auth-token': user.jwt })
+      sendSuccess(200, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': user.jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
     }

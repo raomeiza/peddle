@@ -2,7 +2,6 @@ import jwt, { Secret } from 'jsonwebtoken';
 import { JWT_SECRET_KEY } from '../../config';
 
   export const signToken = async (payload: any): Promise<string> => {
-    console.log('payload', payload);
     // if the secret key is not defined throw an error
     if (!JWT_SECRET_KEY) {
       throw new Error('JWT_SECRET_KEY is not defined');

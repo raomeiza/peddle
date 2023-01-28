@@ -12,7 +12,6 @@ const expressErrorHandlerMiddleware = function errorHandler(
   
   if (err.status === 404) {
     if (req.url.indexOf('.') === -1) {
-      console.log('req.url', req.url);
       res.redirect(`${BASE_URL}/app?original_url=${req.url}`);
       return;
     }
@@ -25,7 +24,7 @@ const expressErrorHandlerMiddleware = function errorHandler(
     return res.status(422).json({
       success:false,
       message: "Validation Failed",
-      errorData: err?.fields,
+      data: err?.fields,
     });
   }
   if (err instanceof Error) {

@@ -70,9 +70,6 @@ export default class handleFile {
     return {};
   }
   private handleFile(request: express.Request): Promise<any> {
-    // log the file details
-    console.log(request.file)
-    console.log(request.files)
     const handle = multer(
       {
         dest: UPLOAD_DIR,

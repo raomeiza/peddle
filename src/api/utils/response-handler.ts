@@ -13,7 +13,6 @@ const handleSuccessResponse = (data: any, message = 'success', code = 200) => {
 // Error message handler and custom message for special error
 const handleErrorResponse = async (sendResponse: any/* a method for sending the response */, error: any) => {
   let resp: any = {};
-  console.log(error)
   // Handling Mongoose Validation Error
   if (error.error == 'castError') {
     resp.data = await handleMongooseValidationError(error);
@@ -75,7 +74,7 @@ const handleErrorResponse = async (sendResponse: any/* a method for sending the 
   if (resp.data == undefined) resp.data = error.details || error;
   if (resp.status == undefined) resp.status = error.status || error.statusCode || error.status || error.statusCode || error.code || 500
   // setStatus(resp.statusCode || 500 )
-  return sendResponse(resp.status || 400, resp);
+  return sendResponse(resp.status || 400, {...resp});
 };
 
 const handleDuplicateKeyError = async (err: any) => {

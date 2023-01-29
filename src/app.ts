@@ -3,10 +3,10 @@ import app from './api'; // index.ts
 import { PORT, BASE_URL } from './config';
 import logger from './api/utils/logger';
 
-console.log(process.env)
+console.log(PORT)
 // Spin server
 const server = createServer(app);
-server.listen(PORT, () => logger.info(`Server listening on ${BASE_URL}`));
+server.listen(PORT, () => logger.info(`Server listening on ${PORT}`));
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (err) => {

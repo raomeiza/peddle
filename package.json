@@ -5,7 +5,7 @@
   "node": ">= 19.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "node ./dist/app.js --watch-paths ./dist",
+    "start": "node ./dist/app.js ",
     "start:ts": "ts-node ./src/app.ts --transpile-only",
     "lint": "eslint ./src --ext ts --ext .js --fix",
     "build:dev": "tsoa routes && tsoa spec && tsc -p . --watch",

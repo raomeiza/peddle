@@ -3,6 +3,7 @@ import logger from '../api/utils/logger'
 import { DATABASE_URL } from '.';
 
 mongoose.set('strictQuery', true);
+console.log(DATABASE_URL)
 const InitiateDB = async () => {
   try {
     // @ts-ignore

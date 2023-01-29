@@ -14,6 +14,7 @@ import logger from './utils/logger';
 import expressErrorHandlerMiddleware from './middlewares/express.error';
 const swaggerDocument = require('../../docs/swagger.json');
 
+console.log(BASE_URL)
 // Instance of express
 const app: express.Application = express();
 

@@ -3,7 +3,6 @@ import app from './api'; // index.ts
 import { PORT, BASE_URL } from './config';
 import logger from './api/utils/logger';
 
-console.log(PORT)
 // Spin server
 const server = createServer(app);
 server.listen(PORT, () => logger.info(`Server listening on ${PORT}`));

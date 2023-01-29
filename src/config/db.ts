@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import logger from '../api/utils/logger'
-import { DATABASE_URL } from '.';
+import { DATABASE_URL, DB_NAME } from '.';
 
 mongoose.set('strictQuery', true);
 const InitiateDB = async () => {
@@ -10,15 +10,17 @@ const InitiateDB = async () => {
       // @ts-ignore
       useNewUrlParser: true,
       useUnifiedTopology: true,
-    });
+      dbName: DB_NAME,
+    }).then(() => {
     logger.log({
       level: 'info',
       message: 'Database connection successful',
     });
+  })
   } catch (ex:any) {
     logger.log({
       level: 'error',
-      message: ex.message,
+      message: 'MongoDB connection error. Please make sure MongoDB is running. ' + ex.message,
     });
     process.exit(1);
   }

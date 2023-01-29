@@ -35,7 +35,7 @@ const Product = model('Product', new Schema({
   },
   category: {
     type: String,
-    
+
   },
   description: {
     type: String,

@@ -10,7 +10,7 @@
     "lint": "eslint ./src --ext ts --ext .js --fix",
     "build:dev": "tsoa routes && tsoa spec && tsc -p . --watch",
     "build:watch": "tsc -p . --watch",
-    "build": " tsc -p . ",
+    "build": "npm install && tsc",
     "routes": "tsoa routes",
     "spec": "tsoa spec",
     "swagger": "tsoa spec"

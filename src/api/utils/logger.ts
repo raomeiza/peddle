@@ -3,9 +3,7 @@ import DailyRotateFile from 'winston-daily-rotate-file';
 
 const { combine, timestamp, printf } = winston.format;
 
-const myFormat = printf(({ level, message, timestamp }) => {
-  return `${timestamp} ${level}: ${message}`;
-});
+const myFormat = printf(({ level, message, timestamp }) => `${timestamp} ${level}: ${message}`);
 
 const logger = winston.createLogger({
   level: 'info',

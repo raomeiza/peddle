@@ -1,6 +1,6 @@
 import Joi from 'joi';
 
- const create = Joi.object().keys({
+const create = Joi.object().keys({
   title: Joi.string().required().messages({
     'string.empty': 'Name is required',
   }),

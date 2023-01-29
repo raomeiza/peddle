@@ -12,7 +12,7 @@ export const login = Joi.object().keys({
 export const signup = Joi.object().keys({
   password: Joi.string().regex(validationUtils.passwordRegexWithoutSpecialChar)
     .error(validationUtils.passwordRegexWithoutSpecialCharError).required(),
-    
+
   repeatPassword: Joi.required().valid(Joi.ref('password'))
     .error(new Error('Passwords do not match')),
   email: Joi.string().lowercase().custom(validationUtils.isEmailValid, 'Please enter a valid Email').required(),

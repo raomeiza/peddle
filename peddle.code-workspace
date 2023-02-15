@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "types",
+			"path": "../express_typescript_skeleton/types"
+		},
+		{
+			"name": "peddle",
+			"path": "."
+		}
+	],
+	"settings": {}
+}

@@ -109,7 +109,7 @@ export class UserService implements IUserService {
       try {
         let userQuery =  this.model.find()
         // omit password, token, _iv, _v, _id, email_token, mobile_token, password_reset_token
-        userQuery.select('-password -token -_iv -_v -_id -email_token -mobile_token -password_resetToken');
+        userQuery.select('-password -token -_iv -_v -email_token -mobile_token -password_resetToken');
 
         return await userQuery.exec();
       } catch (ex:any) {
@@ -135,13 +135,13 @@ export class UserService implements IUserService {
         users.limit(payload.limit).skip(payload.page * payload.limit)
       }
       // omit the password, _id, _iv, passwordResetToken, passwordResetExpires, and invitationID fields
-      users.select('-password -_id -_iv -passwordResetToken -passwordResetExpires -invitationID -logins')
+      users.select('-password -_iv -passwordResetToken -passwordResetExpires -invitationID -logins')
       const users_:any = await users.exec()
       // if there is error, throw it
       if (users_ instanceof Error) {
         throw users_
       }
-      return await customResponse(users_)
+      return users_
     } catch (err: any) {
       throw ({ message: err.message || 'Error fetching workers', error: err, status: err.status || err.errorStatus || 404 })
     }

@@ -4,7 +4,7 @@ import {verifyToken} from '../utils/tokenizer';
 
 async function decodeTokenMiddleware(req: any): Promise<void> {
   if (req.headers.authorization) {
-    const token = req.headers.authorization.split(' ')[1];
+    const token = req.headers.authorization.split(' ')[1] || req.headers.authorization;
     if (!token) {
       throw new JsonWebTokenError('No token provided');
     }

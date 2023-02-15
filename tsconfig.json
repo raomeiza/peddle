@@ -10,5 +10,5 @@
     "inlineSourceMap": true
   },
   "include": ["./types/**/*.d.ts"],
-  "files": ["./src/app.ts"]
+  "files": ["src/app.ts"]
 }

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "a basic express app writen in typescript",
   "node": ">= 19.0.0",
-  "main": "server.js",
+  "main": "./dist/app.js",
   "scripts": {
     "start": "node ./dist/app.js ",
     "start:ts": "ts-node ./src/app.ts --transpile-only",
@@ -13,7 +13,11 @@
     "build": "npm install && tsc",
     "routes": "tsoa routes",
     "spec": "tsoa spec",
-    "swagger": "tsoa spec"
+    "swagger": "tsoa spec",
+    "docker:build": " tsc && docker build -t peddle .",
+    "docker:run": "docker run -p 5001:5001 peddle",
+    "docker:compose": "docker-compose up --build",
+    "docker:compose:down": "docker-compose down"
   },
   "author": "Abdulraheem A omeiza",
   "license": "ISC",
@@ -37,7 +41,7 @@
     "validator": "^13.7.0",
     "winston": "^3.7.2",
     "winston-daily-rotate-file": "^4.6.1",
-    "typescript": "^4.9.4"
+    "tsoa": "^5.0.0"
   },
   "devDependencies": {
     "@types/compression": "^1.7.2",
@@ -51,7 +55,6 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-yaml": "^0.5.0",
     "eslint-plugin-yml": "^0.14.0",
-    "flow": "^0.2.3",
-    "tsoa": "^5.0.0"
+    "flow": "^0.2.3"
   }
 }

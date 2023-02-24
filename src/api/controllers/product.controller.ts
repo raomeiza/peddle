@@ -66,7 +66,7 @@ export class ProductController extends Controller {
       const product = await ProductService.create(details)
       
       const jwt = await refreshToken(thisUser)
-      sendSuccess(201, { success: true, data: {product, jwt} })
+      sendSuccess(201, { success: true, data: product}, /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
       //@ts-ignore
       return handleErrorResponse(sendError, request.multerError || err);
@@ -127,7 +127,7 @@ export class ProductController extends Controller {
       request.files?.length && (update.images = request.files.map((file: any) => file.filename+'.'+file.originalname.split('.').pop()))
       const product = await ProductService.create
       const jwt = await refreshToken(thisUser)
-      sendSuccess(200, { success: true, data: {product, jwt} })
+      sendSuccess(200, { success: true, data: product}, /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
       //@ts-ignore
       return handleErrorResponse(sendError, request.multerError || err);
@@ -155,7 +155,7 @@ export class ProductController extends Controller {
       }
       const product = await ProductService.delete(body.productId);
       const jwt = await refreshToken(thisUser)
-      sendSuccess(200, { success: true, data: {product, jwt} })
+      sendSuccess(200, { success: true, data: product}, /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
       //@ts-ignore
       return handleErrorResponse(sendError, request.multerError || err);
@@ -176,7 +176,7 @@ export class ProductController extends Controller {
         const thisUser = request.decodedUser
         const jwt = await refreshToken(thisUser)
       const products = await ProductService.getAll();
-      return sendSuccess(200, { success: true, data: {products, jwt} })
+      return sendSuccess(200, { success: true, data: products}, /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
       //@ts-ignore
       return handleErrorResponse(sendError, request.multerError || err);
@@ -198,7 +198,7 @@ export class ProductController extends Controller {
       const thisUser = request.decodedUser
       const jwt = await refreshToken(thisUser)
       const product = await ProductService.get(id);
-      sendSuccess(200, { success: true, data: {product, jwt} })
+      sendSuccess(200, { success: true, data: product}, /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
       //@ts-ignore
       return handleErrorResponse(sendError, request.multerError || err);

@@ -36,9 +36,9 @@ export class AdminController extends Controller {
       const hashedPassword = await password.hashPassword(payload.password)
       // create the user
       const user = await adminService.signup({ ...payload, password: hashedPassword })
-      user.jwt = await signToken({ userId: user._id, email: user.email, is_admin: user.is_admin })
+      const jwt = await signToken({ userId: user._id, email: user.email, is_admin: user.is_admin })
       // send the user a verification email
-      sendSuccess(201, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': user.jwt })
+      sendSuccess(201, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
     }
@@ -65,8 +65,8 @@ export class AdminController extends Controller {
       await validations.verifyToken.validateAsync(payload)
       // verify the token
       const user = await adminService.verifyToken({...payload, tokenRoute: 'email'})
-      user.jwt = await signToken({ userId: user._id, email: user.email, is_admin: user.is_admin || false })
-      sendSuccess(200, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': user.jwt })
+      const jwt = await signToken({ userId: user._id, email: user.email, is_admin: user.is_admin || false })
+      sendSuccess(200, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
     }
@@ -99,8 +99,8 @@ export class AdminController extends Controller {
       await validations.profile.validateAsync(payload)
       // verify the token
       const user = await adminService.createProfile(payload)
-      user.jwt = await signToken({ userId: user._id, email: user.email, is_admin: user.is_admin || false })
-      sendSuccess(200, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': user.jwt })
+      const jwt = await signToken({ userId: user._id, email: user.email, is_admin: user.is_admin || false })
+      sendSuccess(200, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
     }
@@ -154,8 +154,8 @@ export class AdminController extends Controller {
       // verify the token
       const user = await adminService.login(payload)
       const { userId, email, is_admin } = user.user
-      user.jwt = await signToken({ userId, email, is_admin })
-      sendSuccess(200, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': user.jwt })
+      const jwt = await signToken({ userId, email, is_admin })
+      sendSuccess(200, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
     }
@@ -188,8 +188,8 @@ export class AdminController extends Controller {
       await validations.isMongoIdValid(userId)
       // verify the token
       const user = await adminService.getUser({userId})
-      user.jwt = await refreshToken(thisUser)
-      sendSuccess(200, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': user.jwt })
+      const jwt = await refreshToken(thisUser)
+      sendSuccess(200, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
     }
@@ -216,8 +216,8 @@ export class AdminController extends Controller {
         throw { status: 401, message: 'Unauthorized' }
       }
       const users = await adminService.getUsers()
-      users.jwt = await refreshToken(thisUser)
-      sendSuccess(200, { success: true, data: users }, /* set the jwt */ { 'x-auth-token': users.jwt })
+      const jwt = await refreshToken(thisUser)
+      sendSuccess(200, { success: true, data: users }, /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
     }
@@ -251,8 +251,8 @@ export class AdminController extends Controller {
       await validations.isMongoIdValid(payload.userId)
       // verify the token
       const user = await adminService.delete(payload)
-      user.jwt = await refreshToken(thisUser)
-      sendSuccess(200, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': user.jwt })
+      const jwt = await refreshToken(thisUser)
+      sendSuccess(200, { success: true, data: user }, /* set the jwt */ { 'x-auth-token': jwt })
     } catch (err: any) {
       return await handleErrorResponse(sendError, err)
     }

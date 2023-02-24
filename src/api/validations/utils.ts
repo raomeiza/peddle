@@ -17,16 +17,22 @@ export const getPasswordStrenthtLevel = (password: string, lenght: number = 8): 
   return level;
 }
 
-export const isEmailValid = (email: string): true | Error => {
+export const isEmailValid = (email: string, helper: any): any => {
   if (!isEmail(email)) {
-    throw { message: 'Email is not valid', status: 400 }
+    if(helper.message) {
+      return helper.message('Invalid email address')
+    }
+    throw { message: 'Invalid email address', status: 400 }
   }
   return true;
 }
 
-export const isMongoIdValid = (id: string): true | Error => {
+export const isMongoIdValid = (id: string, helper:any): any => {
   if (!isMongoId(id)) {
-    throw { message: 'Id is not valid', status: 400 }
+    if(helper.message) {
+      return helper.message('Invalid Id')
+    }
+    throw { message: 'Invalid Id', status: 400 }
   }
   return true;
 }

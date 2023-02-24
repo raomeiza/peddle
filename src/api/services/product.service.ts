@@ -12,7 +12,7 @@ interface IProductService {
   getProductsByCharacteristics(
     characteristics: 'brand' | 'price' | 'discount' | 'rating' | 'category',
     value: string
-    ): Promise<any>;
+  ): Promise<any>;
 }
 
 class ProductService implements IProductService {
@@ -20,7 +20,7 @@ class ProductService implements IProductService {
     try {
       return await Product.create(resource);
     } catch (err: any) {
-            throw ({ message: err.message || 'Failed to create product', error: err, status: err.status || err.errorStatus || 401 })
+      throw ({ message: err.message || 'Failed to create product', error: err, status: err.status || err.errorStatus || 401 })
 
     }
   }
@@ -30,7 +30,7 @@ class ProductService implements IProductService {
       return await Product.findByIdAndUpdate(id, resource, { new: true })
         .orFail(new Error('Product not found'))
     } catch (err: any) {
-            throw ({ message: err.message || 'failed to update product', error: err, status: err.status || err.errorStatus || 401 })
+      throw ({ message: err.message || 'failed to update product', error: err, status: err.status || err.errorStatus || 401 })
 
     }
   }
@@ -39,7 +39,7 @@ class ProductService implements IProductService {
     try {
       return await Product.findByIdAndDelete(id).orFail(new Error('Product not found'));
     } catch (err: any) {
-            throw ({ message: err.message || 'failed to delete product', error: err, status: err.status || err.errorStatus || 404 })
+      throw ({ message: err.message || 'failed to delete product', error: err, status: err.status || err.errorStatus || 404 })
 
     }
   }
@@ -48,7 +48,7 @@ class ProductService implements IProductService {
     try {
       return await Product.findById(id).orFail(new Error('Product not found'));
     } catch (err: any) {
-            throw ({ message: err.message || 'Product not found', error: err, status: err.status || err.errorStatus || 404 })
+      throw ({ message: err.message || 'Product not found', error: err, status: err.status || err.errorStatus || 404 })
 
     }
   }
@@ -57,19 +57,19 @@ class ProductService implements IProductService {
     try {
       return await Product.find();
     } catch (err: any) {
-            throw ({ message: err.message || 'User not found', error: err, status: err.status || err.errorStatus || 404 })
+      throw ({ message: err.message || 'User not found', error: err, status: err.status || err.errorStatus || 404 })
 
     }
-  } 
+  }
 
   async getProductsByCategory(category: string) {
     try {
-     return await Product.find({ $where: `this.category == ${category}` }).orFail(new Error('No products found for this category'));
+      return await Product.find({ $where: `this.category == ${category}` }).orFail(new Error('No products found for this category'));
     } catch (err: any) {
-            throw ({ message: err.message || 'Product not found', error: err, status: err.status || err.errorStatus || 404 })
+      throw ({ message: err.message || 'Product not found', error: err, status: err.status || err.errorStatus || 404 })
 
     }
-      
+
   }
 
   async getProductsByCharacteristics(characteristics: 'brand' | 'price' | 'discount' | 'rating' | 'category', value: string) {
@@ -78,7 +78,7 @@ class ProductService implements IProductService {
       return await Product.find({ $where: `this.${characteristics} == ${value}` }).orFail(new Error('No products found for this category'));
     }
     catch (err: any) {
-            throw ({ message: err.message || 'User not found', error: err, status: err.status || err.errorStatus || 404 })
+      throw ({ message: err.message || 'User not found', error: err, status: err.status || err.errorStatus || 404 })
 
     }
   }

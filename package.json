@@ -4,12 +4,12 @@
   "description": "a basic express app writen in typescript",
   "node": ">= 19.0.0",
   "main": "./dist/app.js",
+  "proxy": "http://localhost:5001",
   "scripts": {
     "start": "node ./dist/app.js ",
-    "start:ts": "ts-node ./src/app.ts --transpile-only",
-    "lint": "eslint ./src --ext ts --ext .js --fix",
+    "lint": "eslint",
     "build:dev": "tsoa routes && tsoa spec && tsc -p . --watch",
-    "build:watch": "tsc -p . --watch",
+    "build:watch": "tsc -p .",
     "build": "npm install && tsc",
     "routes": "tsoa routes",
     "spec": "tsoa spec",
@@ -17,7 +17,8 @@
     "docker:build": " tsc && docker build -t peddle .",
     "docker:run": "docker run -p 5001:5001 peddle",
     "docker:compose": "docker-compose up --build",
-    "docker:compose:down": "docker-compose down"
+    "docker:compose:down": "docker-compose down",
+    "test": "jest --watchAll --coverage"
   },
   "author": "Abdulraheem A omeiza",
   "license": "ISC",
@@ -38,23 +39,34 @@
     "multer": "^1.4.5-lts.1",
     "swagger-jsdoc": "^6.2.1",
     "swagger-ui-express": "^4.3.0",
+    "tsoa": "^5.0.0",
     "validator": "^13.7.0",
     "winston": "^3.7.2",
-    "winston-daily-rotate-file": "^4.6.1",
-    "tsoa": "^5.0.0"
+    "winston-daily-rotate-file": "^4.6.1"
   },
   "devDependencies": {
+    "@jest/types": "^29.4.3",
     "@types/compression": "^1.7.2",
     "@types/cors": "^2.8.13",
+    "@types/jest": "^29.4.0",
     "@types/jsonwebtoken": "^9.0.1",
     "@types/morgan": "^1.9.4",
     "@types/swagger-ui-express": "^4.1.3",
     "@types/validator": "^13.7.10",
-    "eslint": "^8.14.0",
+    "@typescript-eslint/eslint-plugin": "^5.53.0",
+    "@typescript-eslint/parser": "^5.53.0",
+    "eslint": "^8.34.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.26.0",
+    "eslint-config-standard-with-typescript": "^34.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-n": "^15.6.1",
+    "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-yaml": "^0.5.0",
     "eslint-plugin-yml": "^0.14.0",
-    "flow": "^0.2.3"
+    "flow": "^0.2.3",
+    "jest": "^29.4.3",
+    "ts-jest": "^29.0.5",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5"
   }
 }

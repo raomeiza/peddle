@@ -5,17 +5,18 @@ import * as validationUtils from './utils';
 export const { isMongoIdValid } = validationUtils;
 
 export const login = Joi.object().keys({
-  email: Joi.string().required().custom(validationUtils.isEmailValid),
+  email: Joi.string().required().custom(validationUtils.isEmailValid, 'Please enter a valid Email'),
   password: Joi.string().required(),
 });
 
 export const signup = Joi.object().keys({
-  password: Joi.string().regex(validationUtils.passwordRegexWithoutSpecialChar)
-    .error(validationUtils.passwordRegexWithoutSpecialCharError).required(),
+  password: Joi.string().required().regex(validationUtils.passwordRegexWithoutSpecialChar)
+    .error(validationUtils.passwordRegexWithoutSpecialCharError),
 
   repeatPassword: Joi.required().valid(Joi.ref('password'))
     .error(new Error('Passwords do not match')),
-  email: Joi.string().lowercase().custom(validationUtils.isEmailValid, 'Please enter a valid Email').required(),
+  email: Joi.string().lowercase().required().custom(validationUtils.isEmailValid).required(),
+
 });
 
 export const profile = Joi.object().keys({

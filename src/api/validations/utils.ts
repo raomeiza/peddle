@@ -27,7 +27,7 @@ export const isEmailValid = (email: string, helper: any): any => {
   return true;
 }
 
-export const isMongoIdValid = (id: string, helper:any): any => {
+export const isMongoIdValid = (id: string, helper?:any): any => {
   if (!isMongoId(id)) {
     if(helper.message) {
       return helper.message('Invalid Id')
